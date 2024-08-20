@@ -3,10 +3,9 @@ const express = require("express");
 const app = express(); 
 const PORT = process.env.PORT || 3000; 
 const v1Router = require("./routes.js");
+const bodyParser = require("body-parser");
 
-// GET [baseurlapp]/v1/regencies/{id_province}
-// GET [baseurlapp]/v1/provinces
-// GET [baseurlapp]/v1/province/{id_province}
+app.use(bodyParser.json());
 app.use("/v1", v1Router);
 
 app.listen(PORT, () => { 
