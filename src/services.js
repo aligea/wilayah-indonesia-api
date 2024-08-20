@@ -389,7 +389,7 @@ async function getVillagesInDistrict(districtId) {
 /**
  * Untuk mengambil sebuah data kelurahan sesuai dengan parameter kode kelurahan
  * @param {string} villageId <13 chars> Example: '12.01.07.2009'
- * @returns object Village (kode, nama)
+ * @returns objectArray Village (kode, nama)
  */
 const getVillage = async function (villageId) {
   return new Promise(function (resolve, reject) {
@@ -427,6 +427,46 @@ const getVillage = async function (villageId) {
   });
 };
 
+/**
+ * Untuk mengambil data provinsi/kota/kecamatan kelurahan sesuai dengan parameter query
+ * @param {string} inputQuery Example: 'asa'
+ * @returns objectArray [{kode, nama, kategori}]
+ */
+const getDataBySearach = async function (inputQuery) {
+  return new Promise(function (resolve, reject) {
+    try {
+      const db = mysql.createConnection(mysqlConnectOptions);
+      const onErrorConnectionHandler = function (err) {
+        if (err) throw err;
+        console.log("Connected to database");
+      };
+      const sqlquery = `SELECT kode, nama FROM wilayah WHERE kode = ${sanitizeInput(
+        villageId
+      )}`;
+      const onQueryResponseHandler = function (err, results) {
+        if (err) {
+          console.error("Error executing SQL:", err);
+          return;
+        }
+        resolve(results[0]);
+
+        // Close the MySQL connection
+        db.end((error) => {
+          if (error) {
+            console.error("Error closing MySQL connection:", error);
+            return;
+          }
+          console.log("MySQL connection closed.");
+        });
+      };
+
+      db.connect(onErrorConnectionHandler);
+      db.query(sqlquery, onQueryResponseHandler);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
 
 module.exports = {
   init_database: setup_tables,
