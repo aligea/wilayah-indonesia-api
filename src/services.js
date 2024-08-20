@@ -445,5 +445,5 @@ module.exports = {
   village: {
     getAllByDistrict: getVillagesInDistrict,
     getOne: getVillage,
-  },
+  }
 };
