@@ -11,7 +11,7 @@
     "email": "alibangungea@gmail.com"
   },
   "license": "ISC",
-  "description": "",
+  "description": "public API untuk mengakses wilayah Indonesia (provinsi, kabupaten/kota, kecamatan, kelurahan/desa) ",
   "devDependencies": {
     "nodemon": "^3.1.4"
   },
