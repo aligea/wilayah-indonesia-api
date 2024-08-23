@@ -1,6 +1,7 @@
 const config = require("dotenv").config();
 const mysql = require("mysql2");
 const fs = require("fs/promises");
+const { query } = require("express");
 const mysqlConnectOptions = {
   host: process.env.DATABASE_HOST,
   user: process.env.DATABASE_USERNAME,
@@ -440,15 +441,13 @@ const getDataBySearach = async function (inputQuery) {
         if (err) throw err;
         console.log("Connected to database");
       };
-      const sqlquery = `SELECT kode, nama FROM wilayah WHERE kode = ${sanitizeInput(
-        villageId
-      )}`;
+      const sqlquery = `SELECT kode, nama FROM wilayah WHERE nama LIKE '%${inputQuery}%' ORDER BY CHAR_LENGTH(kode) ASC LIMIT 30 `;
       const onQueryResponseHandler = function (err, results) {
         if (err) {
           console.error("Error executing SQL:", err);
           return;
         }
-        resolve(results[0]);
+        resolve(results);
 
         // Close the MySQL connection
         db.end((error) => {
@@ -485,5 +484,8 @@ module.exports = {
   village: {
     getAllByDistrict: getVillagesInDistrict,
     getOne: getVillage,
+  },
+  search:{
+    getDataBySearach: getDataBySearach
   }
 };
