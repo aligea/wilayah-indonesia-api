@@ -1,47 +1,19 @@
-# wilayah-indonesia-api
- public API untuk mengakses wilayah Indonesia (provinsi, kabupaten/kota, kecamatan, kelurahan/desa) 
+# Wilayah Public API Microservice
+
+Microservice API untuk data wilayah Indonesia (provinsi, kabupaten/kota, kecamatan, desa).
 
 
-## Dokumentasi API
+## Endpoint Dasar
 
-Dokumentasi ini menjelaskan cara mengakses layanan API
+- GET /api/v1/provinces  
+- GET /api/v1/provinces/:id  
+- GET /api/v1/regencies?province_id=11
+- GET /api/v1/regencies/:id  
+- GET /api/v1/districts?regency_id=11.01
+- GET /api/v1/districts/11.01.02      
+- GET /api/v1/villages?district_id=110101  
 
-### Provinsi
+Dokumentasi OpenAPI tersedia di `src/docs/openapi.yaml`.
 
-```
-GET [baseurlapp]/v1/provinces
+## Menjalankan
 
-GET [baseurlapp]/v1/province/{id_province}
-```
-
-### Kota/Kabupaten
-```
-GET [baseurlapp]/v1/regencies/{id_province}
-
-GET [baseurlapp]/v1/regency/{id_regency}
-```
-
-### Kecamatan
-```
-GET [baseurlapp]/v1/districts/{id_regency}
-GET [baseurlapp]/v1/district/{id_district}
-```
-
-### Desa/Kelurahan
-```
-GET [baseurlapp]/v1/vilagges/{id_district}
-GET [baseurlapp]/v1/village/{id_vilagge}
-```
-
-### Pencarian Data
-```
-GET [baseurlapp]/search/{query}
-```
-
-### Spin up the development server:
-Clone - download the project, then locate to parent directory
-```
-npm install
-npm run dev
-```
-Look at your terminal, and there should be a message that the "API is listening on port 3000". For this development stage `[baseurlapp] = http://localhost:300`
