@@ -1,17 +1,16 @@
 {
   "name": "wilayah-indonesia-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon src/index.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "migrate": "node src/db/migrations/setup_migration.js"
   },
   "keywords": [
     "api-wilayah-indonesia"
   ],
-  "author": {
-    "name": "Ali Bangun Gea",
-    "email": "alibangungea@gmail.com"
-  },
+  "author": "Ali Bangun Gea <alibangungea@gmail.com>",
   "license": "ISC",
   "description": "public API untuk mengakses wilayah Indonesia (provinsi, kabupaten/kota, kecamatan, kelurahan/desa) ",
   "devDependencies": {
@@ -19,8 +18,11 @@
   },
   "dependencies": {
     "body-parser": "^1.20.2",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.22.1",
+    "express-rate-limit": "^8.2.1",
+    "helmet": "^8.1.0",
     "mysql2": "^3.11.0"
   }
 }
