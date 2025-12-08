@@ -9,11 +9,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// view routes (serves the test HTML)
-app.use('/', viewRoutes);
-
 // rate limit for public API
 app.use(rateLimiter);
+
+// view routes (serves the test HTML)
+app.use('/', viewRoutes);
+app.use('/api/v1/', viewRoutes);
+app.use('/api/', viewRoutes);
 
 // versioning
 app.use("/api/v1", routes);

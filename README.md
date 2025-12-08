@@ -15,5 +15,54 @@ Microservice API untuk data wilayah Indonesia (provinsi, kabupaten/kota, kecamat
 
 Dokumentasi OpenAPI tersedia di `src/docs/openapi.yaml`.
 
-## Menjalankan
 
+# Install & Run — Wilayah Public API
+
+Berikut langkah-langkah untuk menginstall dan menjalankan project ini secara lokal.
+
+Prerequisites:
+- Node.js 14+ dan `npm` atau `yarn`
+- MySQL (jika Anda ingin menjalankan database lokal sesuai konfigurasi `src/config/database.js`)
+
+1) Pasang dependensi
+
+```bash
+npm install
+# atau
+# yarn install
+```
+
+2) Siapkan environment (opsional)
+
+- Salin `.env.example` ke `.env` (jika ada) dan sesuaikan variabel (PORT, DATABASE_URL, dsb.).
+
+3) Siapkan database (opsional)
+
+- Jika Anda menggunakan database lokal, impor SQL dari folder `db/seeders/` atau jalankan migrasi sesuai alur Anda.
+- Jalankan skrip berikut:
+```
+npm run migrate
+```
+
+4) Menjalankan server
+
+```bash
+# jalankan langsung
+node src/server.js
+
+# atau jalankan melalui npm script (jika tersedia):
+npm run start
+
+# atau bisa juga dengan:
+npm run dev
+```
+
+5) Akses API dan halaman test
+
+- API base: `http://localhost:3000/api/v1`
+- Halaman pengujian interaktif (view) tersedia di: `http://localhost:3000/` atau `http://localhost:3000/test`
+
+Catatan tambahan:
+
+- Logger error menulis ke `logs/error.log`.
+- Jika Anda membuka `src/views/index.tpl.html` langsung dari filesystem, klien akan fallback ke `http://localhost:3000/api/v1`.
