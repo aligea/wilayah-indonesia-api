@@ -1,0 +1,241 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Public API Wilayah Indonesia</title>
+  </head>
+  <body>
+    <main
+      style="
+        font-family: Arial, Helvetica, sans-serif;
+        max-width: 900px;
+        margin: 24px auto;
+      "
+    >
+      <h1>API Tester — Wilayah Indonesia</h1>
+      <p>
+        Simple client to explore the API. Make sure your server runs at
+        <code>http://localhost:3000</code> or update the base URL below.
+      </p>
+
+      <div
+        style="
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          align-items: flex-start;
+        "
+      >
+        <div style="min-width: 200px">
+          <label for="province">Provinsi</label><br />
+          <select id="province" style="width: 100%">
+            <option value="">— pilih provinsi —</option>
+          </select>
+        </div>
+        <div style="min-width: 200px">
+          <label for="regency">Kabupaten / Kota</label><br />
+          <select id="regency" style="width: 100%" disabled>
+            <option value="">— pilih kabupaten/kota —</option>
+          </select>
+        </div>
+        <div style="min-width: 200px">
+          <label for="district">Kecamatan</label><br />
+          <select id="district" style="width: 100%" disabled>
+            <option value="">— pilih kecamatan —</option>
+          </select>
+        </div>
+        <div style="min-width: 200px">
+          <label for="village">Desa / Kelurahan</label><br />
+          <select id="village" style="width: 100%" disabled>
+            <option value="">— pilih desa/kelurahan —</option>
+          </select>
+        </div>
+      </div>
+
+      <section style="margin-top: 18px">
+        <button id="showSelection">Tampilkan Pilihan</button>
+        <button id="refreshProvinces">Refresh Provinces</button>
+      </section>
+
+      <section style="margin-top: 12px">
+        <h3>Raw Response</h3>
+        <pre
+          id="output"
+          style="
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 6px;
+            height: 260px;
+            overflow: auto;
+          "
+        ></pre>
+      </section>
+    </main>
+
+    <script>
+      (function () {
+        // Compute API base dynamically so the page works when served from the same origin.
+        // Fallback to localhost if the page is opened from file:// or origin isn't available.
+        const API_BASE = (function () {
+          try {
+            const origin = window.location && window.location.origin;
+            if (origin && origin !== "null") return origin + "/api/v1";
+          } catch (e) {}
+          return "http://localhost:3000/api/v1";
+        })();
+
+        const $ = (id) => document.getElementById(id);
+        const province = $("province");
+        const regency = $("regency");
+        const district = $("district");
+        const village = $("village");
+        const output = $("output");
+        const showSelection = $("showSelection");
+        const refreshProvinces = $("refreshProvinces");
+
+        function log(o) {
+          output.textContent = JSON.stringify(o, null, 2);
+        }
+
+        async function fetchJson(url) {
+          const res = await fetch(url);
+          if (!res.ok) {
+            const text = await res.text();
+            throw new Error(res.status + " " + text);
+          }
+          return res.json();
+        }
+
+        function clearSelect(sel, placeholder) {
+          sel.innerHTML = "";
+          const opt = document.createElement("option");
+          opt.value = "";
+          opt.textContent = placeholder || "— pilih —";
+          sel.appendChild(opt);
+          sel.disabled = true;
+        }
+
+        function populateSelect(
+          sel,
+          items,
+          valueKey = "kode",
+          labelKey = "nama"
+        ) {
+          clearSelect(sel);
+          items.forEach((it) => {
+            const o = document.createElement("option");
+            o.value = it[valueKey];
+            o.textContent = it[labelKey];
+            sel.appendChild(o);
+          });
+          sel.disabled = false;
+        }
+
+        async function loadProvinces() {
+          try {
+            const json = await fetchJson(API_BASE + "/provinces");
+            const data = json.data || json;
+            populateSelect(province, data, "kode", "nama");
+            log({ endpoint: API_BASE + "/provinces", data });
+          } catch (e) {
+            log({ error: String(e) });
+          }
+        }
+
+        async function loadRegencies(provinceId) {
+          try {
+            if (!provinceId)
+              return clearSelect(regency, "— pilih kabupaten/kota —");
+            const json = await fetchJson(
+              API_BASE +
+                "/regencies?province_id=" +
+                encodeURIComponent(provinceId)
+            );
+            const data = json.data || json;
+            populateSelect(regency, data, "kode", "nama");
+            log({ endpoint: API_BASE + "/regencies", provinceId, data });
+          } catch (e) {
+            log({ error: String(e) });
+          }
+        }
+
+        async function loadDistricts(regencyId) {
+          try {
+            if (!regencyId) return clearSelect(district, "— pilih kecamatan —");
+            const json = await fetchJson(
+              API_BASE +
+                "/districts?regency_id=" +
+                encodeURIComponent(regencyId)
+            );
+            const data = json.data || json;
+            populateSelect(district, data, "kode", "nama");
+            log({ endpoint: API_BASE + "/districts", regencyId, data });
+          } catch (e) {
+            log({ error: String(e) });
+          }
+        }
+
+        async function loadVillages(districtId) {
+          try {
+            if (!districtId)
+              return clearSelect(village, "— pilih desa/kelurahan —");
+            const json = await fetchJson(
+              API_BASE +
+                "/villages?district_id=" +
+                encodeURIComponent(districtId)
+            );
+            const data = json.data || json;
+            populateSelect(village, data, "kode", "nama");
+            log({ endpoint: API_BASE +"/villages", districtId, data });
+          } catch (e) {
+            log({ error: String(e) });
+          }
+        }
+
+        province.addEventListener("change", (e) => {
+          const id = e.target.value;
+          clearSelect(regency, "— memilih... —");
+          clearSelect(district, "— pilih kecamatan —");
+          clearSelect(village, "— pilih desa/kelurahan —");
+          if (id) loadRegencies(id);
+        });
+
+        regency.addEventListener("change", (e) => {
+          const id = e.target.value;
+          clearSelect(district, "— memilih... —");
+          clearSelect(village, "— pilih desa/kelurahan —");
+          if (id) loadDistricts(id);
+        });
+
+        district.addEventListener("change", (e) => {
+          const id = e.target.value;
+          clearSelect(village, "— memilih... —");
+          if (id) loadVillages(id);
+        });
+
+        showSelection.addEventListener("click", () => {
+          const sel = {
+            province: province.value
+              ? province.options[province.selectedIndex].text
+              : null,
+            regency: regency.value
+              ? regency.options[regency.selectedIndex].text
+              : null,
+            district: district.value
+              ? district.options[district.selectedIndex].text
+              : null,
+            village: village.value
+              ? village.options[village.selectedIndex].text
+              : null,
+          };
+          log({ selection: sel });
+        });
+
+        refreshProvinces.addEventListener("click", () => loadProvinces());
+
+        // initial load
+        loadProvinces();
+      })();
+    </script>
+  </body>
+</html>
