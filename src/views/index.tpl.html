@@ -124,10 +124,8 @@
           clearSelect(sel);
           items.forEach((it) => {
             const o = document.createElement("option");
-            console.log(it[labelKey]);
             o.value = it[valueKey];
             o.textContent = it[labelKey];
-            // o.innerHTML = it[labelKey];
             sel.appendChild(o);
           });
           sel.disabled = false;
