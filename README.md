@@ -15,10 +15,6 @@ Microservice API untuk data wilayah Indonesia (provinsi, kabupaten/kota, kecamat
 
 Dokumentasi OpenAPI tersedia di `src/docs/openapi.yaml`.
 
-<<<<<<< HEAD
-## Menjalankan
-
-=======
 
 # Install & Run — Wilayah Public API
 
@@ -70,4 +66,3 @@ Catatan tambahan:
 
 - Logger error menulis ke `logs/error.log`.
 - Jika Anda membuka `src/views/index.tpl.html` langsung dari filesystem, klien akan fallback ke `http://localhost:3000/api/v1`.
->>>>>>> dev_v1
